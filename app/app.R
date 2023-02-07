@@ -17,12 +17,12 @@ ui <- fillPage(
   leafletOutput("mapa1", width = "100%", height = "100%"),
   
   fixedPanel(
-    bottom = 60, 
-    right = 10, 
+    bottom = 0, 
+    right = 0, 
 #    draggable = TRUE, 
-    width = "60vmin",
+    width = "100vmin",
 #    height = "40vmin",
-    style = "background: white; border-style: solid; border-width: 2px;", # border-color: #10607E;
+    style = "background: white; border-top-left-radius: 10px !important; border-top-right-radius: 10px !important; border-style: solid; border-width: 1px;", #   border-color: #10607E;
     h5(HTML("<b>Características do Núcleo Urbano Informal</b>"),
        style="padding-left: 10px; padding-right: 10px;"),
     DTOutput("tabela1", width = "100%", height = "100%")
@@ -47,8 +47,11 @@ server <- function(input, output) {
   # mapa1
   output$mapa1 <- renderLeaflet({
     
-    leaflet() %>%
-      setView(lng = -40, lat = -20, zoom = 4) %>%
+    leaflet(
+      options = leafletOptions(
+      attributionControl=FALSE)
+      ) %>%
+      setView(lng = -40, lat = -30, zoom = 4) %>%
       addProviderTiles(
         providers$Esri.WorldImagery, 
         group = "Satélite",
@@ -56,23 +59,30 @@ server <- function(input, output) {
       ) %>%
       addProviderTiles(
         providers$OpenStreetMap.Mapnik, 
-        group = "Padrão",
+        group = "OpenStreetMap",
       ) %>%
       addLayersControl(
         baseGroups = c(
-          "Satélite",
-          "Padrão"
+          "Satélite (Esri)",
+          "OpenStreetMap"
         ),
+        position = c("topright"),
         options = layersControlOptions(
           collapsed = TRUE
         )
+      ) %>%
+      addPolygons(
+        data = muns %>% filter(nuis == F),
+        col = "transparent",
+        fillColor = "black",
+        opacity = 0.25
       ) %>%
       addPolygons(
         data = muns,
         col = "black",
         weight = 2,
         fillColor = "transparent"
-      ) %>%
+      )  %>%
       addPolygons(
         data = nuis1,
         color = "red",
