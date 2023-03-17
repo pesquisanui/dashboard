@@ -35,7 +35,8 @@ ui <- fillPage(
 server <- function(input, output) {
   
   # open data
-  muns <- readRDS("muns.rds")
+  states <- readRDS("states.rds")
+  muns <- readRDS("muns.rds") 
   nuis1 <- readRDS("nuis1.rds")
   nuis2 <- readRDS("nuis2.rds")
 
@@ -51,7 +52,7 @@ server <- function(input, output) {
       options = leafletOptions(
       attributionControl=FALSE)
       ) %>%
-      setView(lng = -40, lat = -30, zoom = 4) %>%
+      setView(lng = -47, lat = -27, zoom = 4) %>%
       addProviderTiles(
         providers$Esri.WorldImagery, 
         group = "Satélite",
@@ -79,6 +80,12 @@ server <- function(input, output) {
       ) %>%
       addPolygons(
         data = muns,
+        col = "black",
+        weight = 1,
+        fillColor = "transparent"
+      )  %>%
+      addPolygons(
+        data = states,
         col = "black",
         weight = 2,
         fillColor = "transparent"
